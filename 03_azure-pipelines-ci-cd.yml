@@ -232,7 +232,7 @@ stages:
 
 # scan ARM template using TTK
 
-    - task: - task: RunARMTTKTests@1
+- task: - task: RunARMTTKTests@1
   inputs:
     templatelocation: '$(System.DefaultWorkingDirectory)\*'
     resultLocation: '$(System.DefaultWorkingDirectory)'
@@ -247,14 +247,14 @@ stages:
         # includeTests: 'VM Images Should Use Latest Version,Resources Should Have Location'
         # skipTests: 'VM Images Should Use Latest Version,Resources Should Have Location'
 
-    - task: PublishTestResults@2
+- task: PublishTestResults@2
       displayName: Publish TTK Test Results
       inputs:
         testResultsFormat: 'NUnit'
         testResultsFiles: '$(System.DefaultWorkingDirectory)\arm\results\*-armttk.xml'
       condition: always()
 
-    - task: AzureCLI@2
+- task: AzureCLI@2
       displayName: Preview Template Changes (What-If)
       inputs:
         workingDirectory: $(System.DefaultWorkingDirectory)/arm/
@@ -264,7 +264,7 @@ stages:
         inlineScript: 'az deployment group what-if --resource-group $(ResourceGroupName) --name rollout01 --template-file  WebSiteSQLDatabase.json --parameters WebSiteSQLDatabase.parameters.json'
         arguments: '-hostingPlanName $(hostingPlanName) -skuName "F1" -skuCapacity 1 -administratorLogin $(Database.Admin) -administratorLoginPassword $(Database.Password) -databaseName $(Database.Name) -collation "SQL_Latin1_General_CP1_CI_AS" -edition "Basic" -maxSizeBytes "1073741824" -requestedServiceObjectiveName "Basic" -webSiteName $(WebAppName) -sqlserverName $(SqlServerName)'
 
-    - task: AzureResourceManagerTemplateDeployment@3
+- task: AzureResourceManagerTemplateDeployment@3
       displayName: Deploy ARM templates
       inputs:
         deploymentScope: 'Resource Group'
@@ -279,7 +279,7 @@ stages:
         overrideParameters: '-hostingPlanName $(hostingPlanName) -skuName "F1" -skuCapacity 1 -administratorLogin $(Database.Admin) -administratorLoginPassword $(Database.Password) -databaseName $(Database.Name) -collation "SQL_Latin1_General_CP1_CI_AS" -edition "Basic" -maxSizeBytes "1073741824" -requestedServiceObjectiveName "Basic" -webSiteName $(WebAppName) -sqlserverName $(SqlServerName)'
         deploymentMode: 'Complete'
 
-    - task: AzSKSVTs@4
+- task: AzSKSVTs@4
       displayName: Scan Azure Resources
       enabled: ${{ parameters.runCompletePipeline }}
       continueOnError: true
@@ -290,7 +290,7 @@ stages:
         SubscriptionId: 'abdc1047-6e87-4b5a-80a0-c91483bc5655'
         EnableGSSscan: true
 
-  - job: Deploy_DEV
+- job: Deploy_DEV
     displayName: Deploy Apps to DEV
     dependsOn: Create_DEV
     pool:
