@@ -173,8 +173,9 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: ARM templates'
       inputs:
-        PathtoPublish: AzureResourceGroupDeployment
-        ArtifactName: arm
+        PathtoPublish: 'AzureResourceGroupDeployment'
+        ArtifactName: 'arm'
+        publishLocation: 'Container'
 
 - stage: Dev_Stage
   displayName: Create & Deploy to Dev
@@ -221,13 +222,12 @@ stages:
         overrideParameters: '-hostingPlanName $(hostingPlanName) -skuName "F1" -skuCapacity 1 -administratorLogin $(Database.Admin) -administratorLoginPassword $(Database.Password) -databaseName $(Database.Name) -collation "SQL_Latin1_General_CP1_CI_AS" -edition "Basic" -maxSizeBytes "1073741824" -requestedServiceObjectiveName "Basic" -webSiteName $(WebAppName) -sqlserverName $(SqlServerName)'
         deploymentMode: 'Validation'
 
-    - task: AzSKARMTemplateChecker@4
-      displayName: Scan ARM templates using AzSK
-      enabled: ${{ parameters.runCompletePipeline }}
-      continueOnError: true
-      inputs:
-        ARMTemplateFilePath: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.json'
-        ARMTemplateParameterFilePath: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.parameters.json'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    action: 'Create Or Update Resource Group'
+    templateLocation: 'Linked artifact'
+    deploymentMode: 'Incremental'
 
 # scan ARM template using TTK
 
