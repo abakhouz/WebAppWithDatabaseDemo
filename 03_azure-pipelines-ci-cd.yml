@@ -225,13 +225,18 @@ stages:
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Free Trial(abdc1047-6e87-4b5a-80a0-c91483bc5655)'
     action: 'Create Or Update Resource Group'
     templateLocation: 'Linked artifact'
     deploymentMode: 'Incremental'
 
 # scan ARM template using TTK
 
-    - task: RunARMTTKTests@1
+    - task: - task: RunARMTTKTests@1
+  inputs:
+    templatelocation: '$(System.DefaultWorkingDirectory)\*'
+    resultLocation: '$(System.DefaultWorkingDirectory)'
+    allTemplatesMain: falses@1
       displayName: Scan ARM templates using TTK
       inputs:
         templatelocation: '$(System.DefaultWorkingDirectory)/arm/'
